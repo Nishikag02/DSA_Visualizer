@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -17,45 +18,28 @@ import java.util.List;
 
 public class VisualizerView {
 
-    // =========================
-    // ALGORITHM DATA
-    // =========================
-
     private List<BubbleSort.Step> steps;
-
     private int currentStep = 0;
 
-    private final int[] originalArray =
-            {5, 2, 8, 1, 6};
-
-    // =========================
-    // UI COMPONENTS
-    // =========================
+    private final int[] originalArray = {5, 2, 8, 1, 6};
 
     private HBox arrayBox;
-
     private VBox codeBox;
 
     private Label status;
-
     private Label explanation;
+    private Label stepLabel;
 
-    // =========================
-    // PLAYBACK
-    // =========================
+    private Slider speedSlider;
+
+    private Button playButton;
 
     private Timeline timeline;
-
     private boolean playing = false;
-
-    // =========================
-    // CREATE VIEW
-    // =========================
 
     public BorderPane createView() {
 
-        BorderPane root =
-                new BorderPane();
+        BorderPane root = new BorderPane();
 
         root.setStyle(
                 "-fx-background-color: #0b0b0d;"
@@ -65,18 +49,12 @@ public class VisualizerView {
         // LEFT SIDEBAR
         // ==================================================
 
-        VBox sidebar =
-                new VBox(18);
+        VBox sidebar = new VBox(18);
 
         sidebar.setPrefWidth(210);
 
         sidebar.setPadding(
-                new Insets(
-                        25,
-                        15,
-                        25,
-                        15
-                )
+                new Insets(25, 15, 25, 15)
         );
 
         sidebar.setStyle(
@@ -85,8 +63,7 @@ public class VisualizerView {
                         "-fx-border-width: 0 1px 0 0;"
         );
 
-        Label appTitle =
-                new Label("DSA VISUAL");
+        Label appTitle = new Label("DSA VISUAL");
 
         appTitle.setStyle(
                 "-fx-font-size: 20px;" +
@@ -94,8 +71,7 @@ public class VisualizerView {
                         "-fx-text-fill: white;"
         );
 
-        Label sortingTitle =
-                new Label("SORTING");
+        Label sortingTitle = new Label("SORTING");
 
         sortingTitle.setStyle(
                 "-fx-font-size: 12px;" +
@@ -104,25 +80,15 @@ public class VisualizerView {
         );
 
         Button bubbleButton =
-                createAlgorithmButton(
-                        "Bubble Sort",
-                        true
-                );
+                createAlgorithmButton("Bubble Sort", true);
 
         Button selectionButton =
-                createAlgorithmButton(
-                        "Selection Sort",
-                        false
-                );
+                createAlgorithmButton("Selection Sort", false);
 
         Button insertionButton =
-                createAlgorithmButton(
-                        "Insertion Sort",
-                        false
-                );
+                createAlgorithmButton("Insertion Sort", false);
 
-        Label searchingTitle =
-                new Label("SEARCHING");
+        Label searchingTitle = new Label("SEARCHING");
 
         searchingTitle.setStyle(
                 "-fx-font-size: 12px;" +
@@ -131,16 +97,10 @@ public class VisualizerView {
         );
 
         Button linearButton =
-                createAlgorithmButton(
-                        "Linear Search",
-                        false
-                );
+                createAlgorithmButton("Linear Search", false);
 
         Button binaryButton =
-                createAlgorithmButton(
-                        "Binary Search",
-                        false
-                );
+                createAlgorithmButton("Binary Search", false);
 
         sidebar.getChildren().addAll(
                 appTitle,
@@ -154,19 +114,13 @@ public class VisualizerView {
         );
 
         // ==================================================
-        // CENTER VISUALIZATION
+        // CENTER
         // ==================================================
 
-        VBox visualization =
-                new VBox(25);
+        VBox visualization = new VBox(25);
 
-        visualization.setAlignment(
-                Pos.CENTER
-        );
-
-        visualization.setPadding(
-                new Insets(35)
-        );
+        visualization.setAlignment(Pos.CENTER);
+        visualization.setPadding(new Insets(35));
 
         Label algorithmTitle =
                 new Label("BUBBLE SORT");
@@ -187,23 +141,14 @@ public class VisualizerView {
                         "-fx-text-fill: #85858d;"
         );
 
-        // ARRAY CONTAINER
+        arrayBox = new HBox(14);
 
-        arrayBox =
-                new HBox(14);
+        arrayBox.setAlignment(Pos.CENTER);
 
-        arrayBox.setAlignment(
-                Pos.CENTER
-        );
-
-        createArrayCards(
-                originalArray
-        );
+        createArrayCards(originalArray);
 
         status =
-                new Label(
-                        "Ready to visualize"
-                );
+                new Label("Ready to visualize");
 
         status.setStyle(
                 "-fx-font-size: 16px;" +
@@ -211,25 +156,31 @@ public class VisualizerView {
                         "-fx-text-fill: #d4d4d8;"
         );
 
+        stepLabel =
+                new Label("Step 0");
+
+        stepLabel.setStyle(
+                "-fx-font-size: 13px;" +
+                        "-fx-text-fill: #77777f;"
+        );
+
         visualization.getChildren().addAll(
                 algorithmTitle,
                 subtitle,
                 arrayBox,
-                status
+                status,
+                stepLabel
         );
 
         // ==================================================
         // RIGHT CODE PANEL
         // ==================================================
 
-        VBox codePanel =
-                new VBox(15);
+        VBox codePanel = new VBox(15);
 
         codePanel.setPrefWidth(430);
 
-        codePanel.setPadding(
-                new Insets(25)
-        );
+        codePanel.setPadding(new Insets(25));
 
         codePanel.setStyle(
                 "-fx-background-color: #111114;" +
@@ -246,12 +197,9 @@ public class VisualizerView {
                         "-fx-text-fill: #888891;"
         );
 
-        codeBox =
-                new VBox(4);
+        codeBox = new VBox(4);
 
-        codeBox.setPadding(
-                new Insets(15)
-        );
+        codeBox.setPadding(new Insets(15));
 
         codeBox.setStyle(
                 "-fx-background-color: #0d0d0f;" +
@@ -301,9 +249,7 @@ public class VisualizerView {
         ScrollPane codeScroll =
                 new ScrollPane(codeBox);
 
-        codeScroll.setFitToWidth(
-                true
-        );
+        codeScroll.setFitToWidth(true);
 
         codeScroll.setStyle(
                 "-fx-background: #0d0d0f;" +
@@ -324,9 +270,7 @@ public class VisualizerView {
                         "Bubble Sort repeatedly compares neighboring elements."
                 );
 
-        explanation.setPadding(
-                new Insets(18)
-        );
+        explanation.setPadding(new Insets(18));
 
         explanation.setMaxWidth(
                 Double.MAX_VALUE
@@ -345,24 +289,37 @@ public class VisualizerView {
         // ==================================================
 
         Button resetButton =
-                createControlButton(
-                        "↶ Reset"
-                );
+                createControlButton("↶ Reset");
 
         Button previousButton =
-                createControlButton(
-                        "◀ Previous"
-                );
+                createControlButton("◀ Previous");
 
-        Button playButton =
-                createControlButton(
-                        "▶ Play"
-                );
+        playButton =
+                createControlButton("▶ Play");
 
         Button nextButton =
-                createControlButton(
-                        "Next ▶"
+                createControlButton("Next ▶");
+
+        Label speedText =
+                new Label("Speed");
+
+        speedText.setStyle(
+                "-fx-text-fill: #9999a1;" +
+                        "-fx-font-size: 12px;"
+        );
+
+        speedSlider =
+                new Slider(
+                        200,
+                        1500,
+                        700
                 );
+
+        speedSlider.setPrefWidth(120);
+
+        speedSlider.setShowTickMarks(false);
+
+        speedSlider.setShowTickLabels(false);
 
         HBox controls =
                 new HBox(
@@ -370,12 +327,12 @@ public class VisualizerView {
                         resetButton,
                         previousButton,
                         playButton,
-                        nextButton
+                        nextButton,
+                        speedText,
+                        speedSlider
                 );
 
-        controls.setAlignment(
-                Pos.CENTER
-        );
+        controls.setAlignment(Pos.CENTER);
 
         controls.setPadding(
                 new Insets(15)
@@ -386,7 +343,7 @@ public class VisualizerView {
         );
 
         // ==================================================
-        // LOAD ALGORITHM STEPS
+        // LOAD STEPS
         // ==================================================
 
         BubbleSort bubbleSort =
@@ -401,59 +358,52 @@ public class VisualizerView {
         // BUTTON ACTIONS
         // ==================================================
 
-        nextButton.setOnAction(
-                event -> {
+        nextButton.setOnAction(event -> {
 
-                    if (playing) {
-                        stopPlaying();
-                    }
+            if (playing) {
+                stopPlaying();
+            }
 
-                    showNextStep();
-                }
-        );
+            showNextStep();
+        });
 
-        previousButton.setOnAction(
-                event -> {
+        previousButton.setOnAction(event -> {
 
-                    if (playing) {
-                        stopPlaying();
-                    }
+            if (playing) {
+                stopPlaying();
+            }
 
-                    showPreviousStep();
-                }
-        );
+            showPreviousStep();
+        });
 
         resetButton.setOnAction(
                 event -> reset()
         );
 
-        playButton.setOnAction(
-                event -> {
+        playButton.setOnAction(event -> {
+
+            if (playing) {
+                stopPlaying();
+            } else {
+                startPlaying();
+            }
+        });
+
+        speedSlider.valueProperty()
+                .addListener((obs, oldValue, newValue) -> {
 
                     if (playing) {
-
-                        stopPlaying();
-
-                    } else {
-
-                        startPlaying();
+                        restartTimeline();
                     }
-                }
-        );
+                });
 
         // ==================================================
         // ROOT
         // ==================================================
 
         root.setLeft(sidebar);
-
-        root.setCenter(
-                visualization
-        );
-
-        root.setRight(
-                codePanel
-        );
+        root.setCenter(visualization);
+        root.setRight(codePanel);
 
         VBox bottom =
                 new VBox(
@@ -461,20 +411,16 @@ public class VisualizerView {
                         controls
                 );
 
-        root.setBottom(
-                bottom
-        );
+        root.setBottom(bottom);
 
         return root;
     }
 
     // ==================================================
-    // CREATE ARRAY CARDS
+    // ARRAY CARDS
     // ==================================================
 
-    private void createArrayCards(
-            int[] array
-    ) {
+    private void createArrayCards(int[] array) {
 
         arrayBox.getChildren().clear();
 
@@ -485,22 +431,13 @@ public class VisualizerView {
                             String.valueOf(number)
                     );
 
-            card.setAlignment(
-                    Pos.CENTER
-            );
+            card.setAlignment(Pos.CENTER);
 
-            card.setPrefSize(
-                    72,
-                    72
-            );
+            card.setPrefSize(72, 72);
 
-            setNormalCardStyle(
-                    card
-            );
+            setNormalCardStyle(card);
 
-            arrayBox.getChildren().add(
-                    card
-            );
+            arrayBox.getChildren().add(card);
         }
     }
 
@@ -525,16 +462,10 @@ public class VisualizerView {
                             )
                     );
 
-            card.setAlignment(
-                    Pos.CENTER
-            );
+            card.setAlignment(Pos.CENTER);
 
-            card.setPrefSize(
-                    72,
-                    72
-            );
+            card.setPrefSize(72, 72);
 
-            // Compare
             if (
                     i == step.firstIndex
                             || i == step.secondIndex
@@ -542,27 +473,19 @@ public class VisualizerView {
 
                 if (step.swapped) {
 
-                    setSwapCardStyle(
-                            card
-                    );
+                    setSwapCardStyle(card);
 
                 } else {
 
-                    setCompareCardStyle(
-                            card
-                    );
+                    setCompareCardStyle(card);
                 }
 
             } else {
 
-                setNormalCardStyle(
-                        card
-                );
+                setNormalCardStyle(card);
             }
 
-            arrayBox.getChildren().add(
-                    card
-            );
+            arrayBox.getChildren().add(card);
         }
     }
 
@@ -582,23 +505,24 @@ public class VisualizerView {
         }
 
         BubbleSort.Step step =
-                steps.get(
-                        currentStep
-                );
+                steps.get(currentStep);
 
-        updateArray(
-                step
-        );
+        updateArray(step);
 
         highlightCodeLine(
                 step.codeLine
         );
 
-        updateExplanation(
-                step
-        );
+        updateExplanation(step);
 
         currentStep++;
+
+        stepLabel.setText(
+                "Step " +
+                        currentStep +
+                        " / " +
+                        steps.size()
+        );
     }
 
     // ==================================================
@@ -608,27 +532,27 @@ public class VisualizerView {
     private void showPreviousStep() {
 
         if (currentStep <= 0) {
-
             return;
         }
 
         currentStep--;
 
         BubbleSort.Step step =
-                steps.get(
-                        currentStep
-                );
+                steps.get(currentStep);
 
-        updateArray(
-                step
-        );
+        updateArray(step);
 
         highlightCodeLine(
                 step.codeLine
         );
 
-        updateExplanation(
-                step
+        updateExplanation(step);
+
+        stepLabel.setText(
+                "Step " +
+                        currentStep +
+                        " / " +
+                        steps.size()
         );
     }
 
@@ -647,26 +571,56 @@ public class VisualizerView {
 
         playing = true;
 
+        playButton.setText("⏸ Pause");
+
+        createTimeline();
+
+        timeline.play();
+    }
+
+    // ==================================================
+    // CREATE TIMELINE
+    // ==================================================
+
+    private void createTimeline() {
+
         timeline =
                 new Timeline(
                         new KeyFrame(
-                                Duration.millis(700),
-                                event -> showNextStep()
+                                Duration.millis(
+                                        speedSlider.getValue()
+                                ),
+                                event ->
+                                        showNextStep()
                         )
                 );
 
         timeline.setCycleCount(
                 Timeline.INDEFINITE
         );
-
-        timeline.play();
-
-        // Change button text visually
-        updatePlayButtonText();
     }
 
     // ==================================================
-    // STOP PLAYING
+    // RESTART TIMELINE
+    // ==================================================
+
+    private void restartTimeline() {
+
+        if (!playing) {
+            return;
+        }
+
+        if (timeline != null) {
+            timeline.stop();
+        }
+
+        createTimeline();
+
+        timeline.play();
+    }
+
+    // ==================================================
+    // STOP
     // ==================================================
 
     private void stopPlaying() {
@@ -674,11 +628,10 @@ public class VisualizerView {
         playing = false;
 
         if (timeline != null) {
-
             timeline.stop();
         }
 
-        updatePlayButtonText();
+        playButton.setText("▶ Play");
     }
 
     // ==================================================
@@ -695,9 +648,7 @@ public class VisualizerView {
                 originalArray
         );
 
-        highlightCodeLine(
-                0
-        );
+        highlightCodeLine(0);
 
         status.setText(
                 "Ready to visualize"
@@ -706,27 +657,11 @@ public class VisualizerView {
         explanation.setText(
                 "Bubble Sort repeatedly compares neighboring elements."
         );
-    }
 
-    // ==================================================
-    // UPDATE PLAY BUTTON
-    // ==================================================
-
-    private void updatePlayButtonText() {
-
-        // Find the Play button from bottom controls
-        // and change its text.
-
-        if (playing) {
-
-            // The actual button text is updated
-            // through the control tree.
-
-            // We handle this through the scene
-            // instead of keeping another variable.
-
-            return;
-        }
+        stepLabel.setText(
+                "Step 0 / " +
+                        steps.size()
+        );
     }
 
     // ==================================================
@@ -744,7 +679,7 @@ public class VisualizerView {
             );
 
             explanation.setText(
-                    "The left element is larger, so the two adjacent elements are swapped."
+                    "The elements are in the wrong order, so we swap them."
             );
 
         } else if (
@@ -756,8 +691,18 @@ public class VisualizerView {
                     "Comparing elements"
             );
 
+            int left =
+                    step.array[step.firstIndex];
+
+            int right =
+                    step.array[step.secondIndex];
+
             explanation.setText(
-                    "Compare the two adjacent elements. If the left one is larger, swap them."
+                    "Comparing " +
+                            left +
+                            " and " +
+                            right +
+                            "."
             );
 
         } else {
@@ -966,8 +911,6 @@ public class VisualizerView {
                         "-fx-padding: 5px;"
         );
 
-        codeBox.getChildren().add(
-                line
-        );
+        codeBox.getChildren().add(line);
     }
 }
