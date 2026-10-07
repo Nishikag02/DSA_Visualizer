@@ -1,9 +1,12 @@
 package com.dsavisualizer.view;
 
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
+
 
 public class AlgorithmSelectionView {
 
@@ -19,6 +22,16 @@ public class AlgorithmSelectionView {
 
         Button bubbleSortButton = new Button("Bubble Sort");
         Button selectionSortButton = new Button("Selection Sort");
+        selectionSortButton.setOnAction(event -> {
+
+            SelectionSortView selectionSortView =
+                    new SelectionSortView();
+
+            VBox layout =
+                    selectionSortView.createView();
+
+            selectionSortButton.getScene().setRoot(layout);
+        });
         Button insertionSortButton = new Button("Insertion Sort");
 
         // Searching section
@@ -34,11 +47,12 @@ public class AlgorithmSelectionView {
         // Bubble Sort navigation
         bubbleSortButton.setOnAction(event -> {
 
-            BubbleSortView bubbleSortView = new BubbleSortView();
+            VisualizerView visualizerView =
+                    new VisualizerView();
 
-            VBox layout = bubbleSortView.createView();
+            BorderPane layout =
+                    visualizerView.createView();
 
-            // Replace current screen
             bubbleSortButton.getScene().setRoot(layout);
         });
 
