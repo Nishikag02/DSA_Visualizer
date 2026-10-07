@@ -31,6 +31,17 @@ public class AlgorithmSelectionView {
         // Back button
         Button backButton = new Button("← Back");
 
+        // Bubble Sort navigation
+        bubbleSortButton.setOnAction(event -> {
+
+            BubbleSortView bubbleSortView = new BubbleSortView();
+
+            VBox layout = bubbleSortView.createView();
+
+            // Replace current screen
+            bubbleSortButton.getScene().setRoot(layout);
+        });
+
         // Layout
         VBox layout = new VBox(
                 15,
