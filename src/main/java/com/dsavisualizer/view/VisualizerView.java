@@ -31,7 +31,6 @@ public class VisualizerView {
     private Label stepLabel;
 
     private Slider speedSlider;
-
     private Button playButton;
 
     private Timeline timeline;
@@ -52,7 +51,6 @@ public class VisualizerView {
         VBox sidebar = new VBox(18);
 
         sidebar.setPrefWidth(210);
-
         sidebar.setPadding(
                 new Insets(25, 15, 25, 15)
         );
@@ -88,7 +86,8 @@ public class VisualizerView {
         Button insertionButton =
                 createAlgorithmButton("Insertion Sort", false);
 
-        Label searchingTitle = new Label("SEARCHING");
+        Label searchingTitle =
+                new Label("SEARCHING");
 
         searchingTitle.setStyle(
                 "-fx-font-size: 12px;" +
@@ -173,13 +172,12 @@ public class VisualizerView {
         );
 
         // ==================================================
-        // RIGHT CODE PANEL
+        // CODE PANEL
         // ==================================================
 
         VBox codePanel = new VBox(15);
 
         codePanel.setPrefWidth(430);
-
         codePanel.setPadding(new Insets(25));
 
         codePanel.setStyle(
@@ -317,10 +315,6 @@ public class VisualizerView {
 
         speedSlider.setPrefWidth(120);
 
-        speedSlider.setShowTickMarks(false);
-
-        speedSlider.setShowTickLabels(false);
-
         HBox controls =
                 new HBox(
                         10,
@@ -355,7 +349,7 @@ public class VisualizerView {
                 );
 
         // ==================================================
-        // BUTTON ACTIONS
+        // BUTTONS
         // ==================================================
 
         nextButton.setOnAction(event -> {
@@ -397,10 +391,6 @@ public class VisualizerView {
                     }
                 });
 
-        // ==================================================
-        // ROOT
-        // ==================================================
-
         root.setLeft(sidebar);
         root.setCenter(visualization);
         root.setRight(codePanel);
@@ -417,7 +407,7 @@ public class VisualizerView {
     }
 
     // ==================================================
-    // ARRAY CARDS
+    // CREATE ARRAY
     // ==================================================
 
     private void createArrayCards(int[] array) {
@@ -466,7 +456,11 @@ public class VisualizerView {
 
             card.setPrefSize(72, 72);
 
-            if (
+            if (isSorted(step, i)) {
+
+                setSortedCardStyle(card);
+
+            } else if (
                     i == step.firstIndex
                             || i == step.secondIndex
             ) {
@@ -487,6 +481,57 @@ public class VisualizerView {
 
             arrayBox.getChildren().add(card);
         }
+    }
+
+    // ==================================================
+    // SORTED CHECK
+    // ==================================================
+
+    private boolean isSorted(
+            BubbleSort.Step step,
+            int index
+    ) {
+
+        // Final state = everything sorted
+        if (step.codeLine == 8) {
+            return true;
+        }
+
+        // Bubble Sort places elements at the end
+        // after every outer loop.
+        int sortedStart =
+                originalArray.length
+                        - getCompletedPasses(step);
+
+        return index >= sortedStart;
+    }
+
+    private int getCompletedPasses(
+            BubbleSort.Step step
+    ) {
+
+        int count = 0;
+
+        for (int i = 0;
+             i < currentStep;
+             i++) {
+
+            BubbleSort.Step previous =
+                    steps.get(i);
+
+            if (
+                    previous.codeLine == 5
+                            && previous.firstIndex
+                            == previous.secondIndex - 1
+            ) {
+                count++;
+            }
+        }
+
+        return Math.min(
+                count,
+                originalArray.length - 1
+        );
     }
 
     // ==================================================
@@ -565,13 +610,14 @@ public class VisualizerView {
         if (
                 currentStep >= steps.size()
         ) {
-
             reset();
         }
 
         playing = true;
 
-        playButton.setText("⏸ Pause");
+        playButton.setText(
+                "⏸ Pause"
+        );
 
         createTimeline();
 
@@ -579,7 +625,7 @@ public class VisualizerView {
     }
 
     // ==================================================
-    // CREATE TIMELINE
+    // TIMELINE
     // ==================================================
 
     private void createTimeline() {
@@ -599,10 +645,6 @@ public class VisualizerView {
                 Timeline.INDEFINITE
         );
     }
-
-    // ==================================================
-    // RESTART TIMELINE
-    // ==================================================
 
     private void restartTimeline() {
 
@@ -631,7 +673,9 @@ public class VisualizerView {
             timeline.stop();
         }
 
-        playButton.setText("▶ Play");
+        playButton.setText(
+                "▶ Play"
+        );
     }
 
     // ==================================================
@@ -674,12 +718,23 @@ public class VisualizerView {
 
         if (step.swapped) {
 
+            int left =
+                    step.array[step.firstIndex];
+
+            int right =
+                    step.array[step.secondIndex];
+
             status.setText(
                     "Swapping elements"
             );
 
             explanation.setText(
-                    "The elements are in the wrong order, so we swap them."
+                    "The elements are in the wrong order. " +
+                            "After the swap: " +
+                            left +
+                            " and " +
+                            right +
+                            "."
             );
 
         } else if (
@@ -697,13 +752,29 @@ public class VisualizerView {
             int right =
                     step.array[step.secondIndex];
 
-            explanation.setText(
-                    "Comparing " +
-                            left +
-                            " and " +
-                            right +
-                            "."
-            );
+            if (left > right) {
+
+                explanation.setText(
+                        "Comparing " +
+                                left +
+                                " and " +
+                                right +
+                                ". " +
+                                left +
+                                " is larger, so a swap is needed."
+                );
+
+            } else {
+
+                explanation.setText(
+                        "Comparing " +
+                                left +
+                                " and " +
+                                right +
+                                ". " +
+                                "They are already in the correct order."
+                );
+            }
 
         } else {
 
@@ -712,7 +783,8 @@ public class VisualizerView {
             );
 
             explanation.setText(
-                    "Bubble Sort has finished. The array is now sorted."
+                    "Bubble Sort has finished. " +
+                            "All elements are now sorted."
             );
         }
     }
@@ -766,7 +838,7 @@ public class VisualizerView {
     }
 
     // ==================================================
-    // CARD STYLES
+    // NORMAL CARD
     // ==================================================
 
     private void setNormalCardStyle(
@@ -785,6 +857,10 @@ public class VisualizerView {
         );
     }
 
+    // ==================================================
+    // COMPARISON CARD
+    // ==================================================
+
     private void setCompareCardStyle(
             Label card
     ) {
@@ -801,6 +877,10 @@ public class VisualizerView {
         );
     }
 
+    // ==================================================
+    // SWAP CARD
+    // ==================================================
+
     private void setSwapCardStyle(
             Label card
     ) {
@@ -812,6 +892,26 @@ public class VisualizerView {
                         "-fx-background-color: #4b2028;" +
                         "-fx-background-radius: 10px;" +
                         "-fx-border-color: #d85b6b;" +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 10px;"
+        );
+    }
+
+    // ==================================================
+    // SORTED CARD
+    // ==================================================
+
+    private void setSortedCardStyle(
+            Label card
+    ) {
+
+        card.setStyle(
+                "-fx-font-size: 24px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-background-color: #183c2a;" +
+                        "-fx-background-radius: 10px;" +
+                        "-fx-border-color: #4fbd7b;" +
                         "-fx-border-width: 2px;" +
                         "-fx-border-radius: 10px;"
         );
