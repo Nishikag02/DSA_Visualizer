@@ -11,20 +11,20 @@ public class BubbleSort {
         public int firstIndex;
         public int secondIndex;
         public boolean swapped;
-        public int sortedFrom;
+        public int codeLine;
 
         public Step(
                 int[] array,
                 int firstIndex,
                 int secondIndex,
                 boolean swapped,
-                int sortedFrom
+                int codeLine
         ) {
             this.array = array;
             this.firstIndex = firstIndex;
             this.secondIndex = secondIndex;
             this.swapped = swapped;
-            this.sortedFrom = sortedFrom;
+            this.codeLine = codeLine;
         }
     }
 
@@ -33,31 +33,38 @@ public class BubbleSort {
         List<Step> steps = new ArrayList<>();
 
         int[] copy = array.clone();
+
         int n = copy.length;
 
+        // Start outer loop
         for (int i = 0; i < n - 1; i++) {
 
+            // Start inner loop
             for (int j = 0; j < n - i - 1; j++) {
 
-                // Show comparison
+                // Line 4:
+                // Compare adjacent elements
                 steps.add(
                         new Step(
                                 copy.clone(),
                                 j,
                                 j + 1,
                                 false,
-                                n - i
+                                4
                         )
                 );
 
-                // Swap if elements are in the wrong order
+                // If elements are in wrong order
                 if (copy[j] > copy[j + 1]) {
 
+                    // Swap
                     int temp = copy[j];
 
                     copy[j] = copy[j + 1];
+
                     copy[j + 1] = temp;
 
+                    // Line 5:
                     // Show swap
                     steps.add(
                             new Step(
@@ -65,21 +72,21 @@ public class BubbleSort {
                                     j,
                                     j + 1,
                                     true,
-                                    n - i
+                                    5
                             )
                     );
                 }
             }
         }
 
-        // Final sorted state
+        // Final state
         steps.add(
                 new Step(
                         copy.clone(),
                         -1,
                         -1,
                         false,
-                        0
+                        8
                 )
         );
 
