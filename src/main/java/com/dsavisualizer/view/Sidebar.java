@@ -3,6 +3,7 @@ package com.dsavisualizer.view;
 import com.dsavisualizer.algorithms.AlgorithmRegistry;
 import com.dsavisualizer.algorithms.SearchAlgorithm;
 import com.dsavisualizer.algorithms.SortAlgorithm;
+import com.dsavisualizer.structures.DataStructure;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -61,6 +62,9 @@ public final class Sidebar {
         // too small (so adding more algorithms never breaks the layout)
         VBox list = new VBox(8);
 
+        // Position of the selected button inside the list (-1 = none yet)
+        int selectedPosition = -1;
+
         list.getChildren().add(sortingLabel);
 
         // One button per sorting algorithm (from the registry)
@@ -78,6 +82,10 @@ public final class Sidebar {
                             new VisualizerView(algorithm, navigator).createView());
                 }
             });
+
+            if (selected) {
+                selectedPosition = list.getChildren().size();
+            }
 
             list.getChildren().add(button);
         }
@@ -103,6 +111,38 @@ public final class Sidebar {
                 }
             });
 
+            if (selected) {
+                selectedPosition = list.getChildren().size();
+            }
+
+            list.getChildren().add(button);
+        }
+
+        Label structuresLabel = Styles.createSectionLabel("DATA STRUCTURES");
+        structuresLabel.setPadding(new Insets(14, 0, 0, 0));
+
+        list.getChildren().add(structuresLabel);
+
+        // One button per data structure (from the registry)
+        for (DataStructure structure : AlgorithmRegistry.getDataStructures()) {
+
+            boolean selected = structure.getDisplayName().equals(selectedName);
+
+            Button button = Styles.createAlgorithmButton(
+                    structure.getDisplayName(), selected);
+
+            button.setOnAction(event -> {
+                if (!selected) {
+                    currentScreen.stop();
+                    button.getScene().setRoot(
+                            new StructureView(structure, navigator).createView());
+                }
+            });
+
+            if (selected) {
+                selectedPosition = list.getChildren().size();
+            }
+
             list.getChildren().add(button);
         }
 
@@ -118,6 +158,13 @@ public final class Sidebar {
         );
 
         VBox.setVgrow(scroll, Priority.ALWAYS);
+
+        // Scroll so the selected button is visible: 0.0 = top, 1.0 = bottom
+        int total = list.getChildren().size();
+
+        if (selectedPosition >= 0 && total > 1) {
+            scroll.setVvalue((double) selectedPosition / (total - 1));
+        }
 
         Button menuButton = Styles.createControlButton("← Menu");
         menuButton.setMaxWidth(Double.MAX_VALUE);

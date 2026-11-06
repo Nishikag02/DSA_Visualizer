@@ -30,7 +30,7 @@ public final class Styles {
                             "-fx-background-color: #27272c;" +
                             "-fx-background-radius: 7px;" +
                             "-fx-alignment: CENTER_LEFT;" +
-                            "-fx-padding: 10px;"
+                            "-fx-padding: 8px 10px;"
             );
 
         } else {
@@ -40,7 +40,7 @@ public final class Styles {
                             "-fx-text-fill: #9999a1;" +
                             "-fx-background-color: transparent;" +
                             "-fx-alignment: CENTER_LEFT;" +
-                            "-fx-padding: 10px;"
+                            "-fx-padding: 8px 10px;"
             );
         }
 

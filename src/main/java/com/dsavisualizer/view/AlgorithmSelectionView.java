@@ -3,6 +3,7 @@ package com.dsavisualizer.view;
 import com.dsavisualizer.algorithms.AlgorithmRegistry;
 import com.dsavisualizer.algorithms.SearchAlgorithm;
 import com.dsavisualizer.algorithms.SortAlgorithm;
+import com.dsavisualizer.structures.DataStructure;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,7 +15,7 @@ import javafx.scene.layout.VBox;
  * like the sorting and searching screens.
  *
  * The buttons are created in loops over the lists in AlgorithmRegistry, so a
- * new algorithm shows up here automatically.
+ * new algorithm or data structure shows up here automatically.
  */
 public class AlgorithmSelectionView implements AppScreen {
 
@@ -66,6 +67,22 @@ public class AlgorithmSelectionView implements AppScreen {
 
             button.setOnAction(event -> button.getScene().setRoot(
                     new SearchView(algorithm, navigator).createView()));
+
+            layout.getChildren().add(button);
+        }
+
+        // Data structures section
+        Label structuresLabel = new Label("DATA STRUCTURES");
+        structuresLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        layout.getChildren().add(structuresLabel);
+
+        // All data structure buttons open the SAME screen (StructureView)
+        for (DataStructure structure : AlgorithmRegistry.getDataStructures()) {
+
+            Button button = new Button(structure.getDisplayName());
+
+            button.setOnAction(event -> button.getScene().setRoot(
+                    new StructureView(structure, navigator).createView()));
 
             layout.getChildren().add(button);
         }

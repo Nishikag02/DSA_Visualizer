@@ -54,6 +54,11 @@ public final class InputParser {
         return parseNumber(text);
     }
 
+    /** "15" -> 15, the value typed for Push / Enqueue / Insert / Delete / Search. */
+    public static int parseValue(String text) throws InvalidInputException {
+        return parseNumber(text);
+    }
+
     /** {5, 2, 8} -> "5, 2, 8" (used to fill the text field). */
     public static String arrayToText(int[] array) {
 

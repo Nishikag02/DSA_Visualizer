@@ -1,10 +1,15 @@
 package com.dsavisualizer.algorithms;
 
+import com.dsavisualizer.structures.DataStructure;
+import com.dsavisualizer.structures.LinkedListStructure;
+import com.dsavisualizer.structures.QueueStructure;
+import com.dsavisualizer.structures.StackStructure;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The ONE place that lists every algorithm of the project.
+ * The ONE place that lists every algorithm and data structure of the project.
  *
  * The sidebar and the menu loop over these lists, so adding a new algorithm
  * = create its class + add ONE line here. Nothing else has to change.
@@ -37,6 +42,17 @@ public final class AlgorithmRegistry {
 
         list.add(new LinearSearch());
         list.add(new BinarySearch());
+
+        return list;
+    }
+
+    public static List<DataStructure> getDataStructures() {
+
+        List<DataStructure> list = new ArrayList<>();
+
+        list.add(new StackStructure());
+        list.add(new QueueStructure());
+        list.add(new LinkedListStructure());
 
         return list;
     }
