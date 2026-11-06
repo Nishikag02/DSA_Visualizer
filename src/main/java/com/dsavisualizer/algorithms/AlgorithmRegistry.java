@@ -24,6 +24,8 @@ public final class AlgorithmRegistry {
         list.add(new BubbleSort());
         list.add(new SelectionSort());
         list.add(new InsertionSort());
+        list.add(new MergeSort());
+        list.add(new QuickSort());
 
         return list;
     }

@@ -34,7 +34,7 @@ public final class Sidebar {
                               Navigator navigator,
                               AppScreen currentScreen) {
 
-        VBox sidebar = new VBox(18);
+        VBox sidebar = new VBox(8);
 
         sidebar.setPrefWidth(210);
 
@@ -54,7 +54,10 @@ public final class Sidebar {
                         "-fx-text-fill: white;"
         );
 
-        sidebar.getChildren().addAll(appTitle, Styles.createSectionLabel("SORTING"));
+        Label sortingLabel = Styles.createSectionLabel("SORTING");
+        sortingLabel.setPadding(new Insets(14, 0, 0, 0));
+
+        sidebar.getChildren().addAll(appTitle, sortingLabel);
 
         // One button per sorting algorithm (from the registry)
         for (SortAlgorithm algorithm : AlgorithmRegistry.getSortAlgorithms()) {
@@ -75,7 +78,10 @@ public final class Sidebar {
             sidebar.getChildren().add(button);
         }
 
-        sidebar.getChildren().add(Styles.createSectionLabel("SEARCHING"));
+        Label searchingLabel = Styles.createSectionLabel("SEARCHING");
+        searchingLabel.setPadding(new Insets(14, 0, 0, 0));
+
+        sidebar.getChildren().add(searchingLabel);
 
         // One button per searching algorithm (from the registry)
         for (SearchAlgorithm algorithm : AlgorithmRegistry.getSearchAlgorithms()) {

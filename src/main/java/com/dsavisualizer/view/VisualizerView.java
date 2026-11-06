@@ -23,6 +23,8 @@ import javafx.scene.layout.HBox;
 
 import javafx.scene.layout.VBox;
 
+import javafx.scene.text.TextAlignment;
+
 import javafx.util.Duration;
 
 import java.util.List;
@@ -120,6 +122,11 @@ public class VisualizerView implements AppScreen {
         );
 
         Label subtitle = new Label(algorithm.getSubtitle());
+
+        // Long subtitles wrap onto a second line instead of ending in "..."
+        subtitle.setWrapText(true);
+        subtitle.setMaxWidth(430);
+        subtitle.setTextAlignment(TextAlignment.CENTER);
 
         subtitle.setStyle(
                 "-fx-font-size: 14px;" +
@@ -402,6 +409,10 @@ public class VisualizerView implements AppScreen {
             // Already sorted area: green
             else if (step.sorted[i]) {
                 setSortedCardStyle(card);
+            }
+            // Outside the range being worked on (Merge / Quick Sort): dim
+            else if (step.isOutsideRange(i)) {
+                card.setStyle(Styles.cardStyle("#0e0e10", "#2b2b30", "#55555c", 24));
             }
             // Normal card
             else {

@@ -22,6 +22,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import javafx.scene.text.TextAlignment;
+
 import javafx.util.Duration;
 
 import java.util.List;
@@ -123,6 +125,11 @@ public class SearchView implements AppScreen {
         );
 
         Label subtitle = new Label(algorithm.getSubtitle());
+
+        // Long subtitles wrap onto a second line instead of ending in "..."
+        subtitle.setWrapText(true);
+        subtitle.setMaxWidth(430);
+        subtitle.setTextAlignment(TextAlignment.CENTER);
 
         subtitle.setStyle(
                 "-fx-font-size: 14px;" +

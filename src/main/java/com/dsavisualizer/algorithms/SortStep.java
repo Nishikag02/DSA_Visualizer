@@ -51,6 +51,14 @@ public class SortStep {
     /** True only for the final step. */
     public boolean complete = false;
 
+    /**
+     * The part of the array the algorithm is working on right now
+     * (Merge Sort: the range being merged, Quick Sort: the part being
+     * partitioned). Cards outside it are drawn dim. -1 = no range.
+     */
+    public int rangeFrom = -1;
+    public int rangeTo = -1;
+
     public SortStep(int[] array, int codeLine, String title, String message) {
         this.array = array.clone();
         this.codeLine = codeLine;
@@ -95,6 +103,28 @@ public class SortStep {
     public SortStep withWrongOrder(boolean wrongOrder) {
         this.wrongOrder = wrongOrder;
         return this;
+    }
+
+    /** Marks every index that is true in flags as sorted (used by Merge / Quick Sort). */
+    public SortStep withSortedFlags(boolean[] flags) {
+        for (int i = 0; i < flags.length && i < sorted.length; i++) {
+            if (flags[i]) {
+                sorted[i] = true;
+            }
+        }
+        return this;
+    }
+
+    /** Sets the working range from..to (both inclusive). */
+    public SortStep withRange(int from, int to) {
+        this.rangeFrom = from;
+        this.rangeTo = to;
+        return this;
+    }
+
+    /** True if a range is set and index i lies outside it. */
+    public boolean isOutsideRange(int i) {
+        return rangeFrom >= 0 && (i < rangeFrom || i > rangeTo);
     }
 
     /** Final step: everything is sorted. */

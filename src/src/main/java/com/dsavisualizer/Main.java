@@ -1,6 +1,7 @@
 package com.dsavisualizer;
 
 import com.dsavisualizer.view.AlgorithmSelectionView;
+import com.dsavisualizer.view.Navigator;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class Main extends javafx.application.Application {
+public class Main extends javafx.application.Application implements Navigator {
 
     // Window size used for every screen. Change it here, in one place.
     private static final double WINDOW_WIDTH = 1150;
@@ -17,7 +18,7 @@ public class Main extends javafx.application.Application {
 
     // The window cannot be dragged smaller than this, so the three-panel
     // visualizer (sidebar + cards + code panel) never gets squeezed.
-    private static final double MIN_WIDTH = 1000;
+    private static final double MIN_WIDTH = 1100;
     private static final double MIN_HEIGHT = 650;
 
     private Stage stage;
@@ -36,7 +37,9 @@ public class Main extends javafx.application.Application {
         stage.show();
     }
 
-    private void showDashboard() {
+    /** Required by the Navigator interface: the screens call this to go back. */
+    @Override
+    public void showDashboard() {
 
         BorderPane root = new BorderPane();
 
@@ -64,10 +67,9 @@ public class Main extends javafx.application.Application {
 
     private void showAlgorithmSelection() {
 
-        // this::showDashboard is a METHOD REFERENCE (a short form of a lambda).
-        // The menu screen runs it when its Back button is clicked, so the menu
-        // can go "back" without knowing anything about Main.
-        AlgorithmSelectionView view = new AlgorithmSelectionView(this::showDashboard);
+        // "this" is Main, and Main implements Navigator. The menu keeps it and
+        // calls navigator.showDashboard() when its Back button is clicked.
+        AlgorithmSelectionView view = new AlgorithmSelectionView(this);
 
         VBox layout = view.createView();
 
