@@ -1,0 +1,13 @@
+[33m53032e0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Add Merge Sort and Quick Sort
+[33md3d4718[m Add Linear and Binary Search and refactor algorithms to abstract classes and interfaces
+[33m714d7e8[m Enlarge window and connect Back navigation
+[33m96d0019[m Unify sorting visualizer and add Insertion Sort
+[33mf474905[m Improve Bubble Sort visualization states
+[33m3245125[m Polish Bubble Sort visualization
+[33m42cb3f1[m Add Bubble Sort playback controls
+[33mad9a404[m Add interactive Bubble Sort playback
+[33m95d21ee[m Create interactive visualizer layout
+[33m74ea9b6[m Improve Bubble Sort visualization
+[33mfad5c00[m Add algorithm selection screen
+[33mfe4f8e8[m Create initial DSA visualizer dashboard
+[33m4d462df[m Set up JavaFX Maven project

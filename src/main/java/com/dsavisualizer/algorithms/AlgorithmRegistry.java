@@ -26,6 +26,7 @@ public final class AlgorithmRegistry {
         list.add(new InsertionSort());
         list.add(new MergeSort());
         list.add(new QuickSort());
+        list.add(new HeapSort());
 
         return list;
     }
