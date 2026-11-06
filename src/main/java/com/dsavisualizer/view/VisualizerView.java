@@ -72,8 +72,12 @@ public class VisualizerView {
     private boolean playing = false;
     private boolean animating = false;
 
-    public VisualizerView(SortAlgorithm algorithm) {
+    /** Passed along to the menu so its Back button can reach the dashboard. */
+    private final Runnable onBackToDashboard;
+
+    public VisualizerView(SortAlgorithm algorithm, Runnable onBackToDashboard) {
         this.algorithm = algorithm;
+        this.onBackToDashboard = onBackToDashboard;
     }
 
     public BorderPane createView() {
@@ -394,7 +398,7 @@ public class VisualizerView {
 
         stopEverything();
 
-        VisualizerView view = new VisualizerView(other);
+        VisualizerView view = new VisualizerView(other, onBackToDashboard);
 
         root.getScene().setRoot(view.createView());
     }
@@ -404,7 +408,7 @@ public class VisualizerView {
 
         stopEverything();
 
-        AlgorithmSelectionView menu = new AlgorithmSelectionView();
+        AlgorithmSelectionView menu = new AlgorithmSelectionView(onBackToDashboard);
 
         root.getScene().setRoot(menu.createView());
     }

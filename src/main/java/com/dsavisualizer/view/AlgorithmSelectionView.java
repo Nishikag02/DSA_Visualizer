@@ -9,6 +9,13 @@ import javafx.scene.layout.VBox;
 
 public class AlgorithmSelectionView {
 
+    /** Code to run when "Back" is clicked (given to us by Main). */
+    private final Runnable onBack;
+
+    public AlgorithmSelectionView(Runnable onBack) {
+        this.onBack = onBack;
+    }
+
     public VBox createView() {
 
         // Title
@@ -40,8 +47,9 @@ public class AlgorithmSelectionView {
         Button linearSearchButton = new Button("Linear Search");
         Button binarySearchButton = new Button("Binary Search");
 
-        // Back button (not connected yet)
+        // Back button: runs the action Main gave us (shows the dashboard)
         Button backButton = new Button("← Back");
+        backButton.setOnAction(event -> onBack.run());
 
         // Layout
         VBox layout = new VBox(
@@ -65,7 +73,7 @@ public class AlgorithmSelectionView {
     /** Builds the shared visualizer for one algorithm and shows it. */
     private void openSort(SortAlgorithm algorithm, Button source) {
 
-        VisualizerView view = new VisualizerView(algorithm);
+        VisualizerView view = new VisualizerView(algorithm, onBack);
 
         source.getScene().setRoot(view.createView());
     }

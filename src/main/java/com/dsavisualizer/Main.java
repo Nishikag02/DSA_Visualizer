@@ -11,12 +11,24 @@ import javafx.stage.Stage;
 
 public class Main extends javafx.application.Application {
 
+    // Window size used for every screen. Change it here, in one place.
+    private static final double WINDOW_WIDTH = 1150;
+    private static final double WINDOW_HEIGHT = 700;
+
+    // The window cannot be dragged smaller than this, so the three-panel
+    // visualizer (sidebar + cards + code panel) never gets squeezed.
+    private static final double MIN_WIDTH = 1000;
+    private static final double MIN_HEIGHT = 650;
+
     private Stage stage;
 
     @Override
     public void start(Stage stage) {
 
         this.stage = stage;
+
+        stage.setMinWidth(MIN_WIDTH);
+        stage.setMinHeight(MIN_HEIGHT);
 
         showDashboard();
 
@@ -47,20 +59,32 @@ public class Main extends javafx.application.Application {
 
         startButton.setOnAction(event -> showAlgorithmSelection());
 
-        Scene scene = new Scene(root, 900, 600);
-
-        stage.setScene(scene);
+        showScene(root);
     }
 
     private void showAlgorithmSelection() {
 
-        AlgorithmSelectionView view = new AlgorithmSelectionView();
+        // this::showDashboard is a METHOD REFERENCE (a short form of a lambda).
+        // The menu screen runs it when its Back button is clicked, so the menu
+        // can go "back" without knowing anything about Main.
+        AlgorithmSelectionView view = new AlgorithmSelectionView(this::showDashboard);
 
         VBox layout = view.createView();
 
-        Scene scene = new Scene(layout, 900, 600);
+        showScene(layout);
+    }
 
-        stage.setScene(scene);
+    /**
+     * Puts a screen into the window. If the window is already open, it keeps
+     * its current size (so a resized or maximized window stays that way).
+     */
+    private void showScene(javafx.scene.Parent root) {
+
+        if (stage.getScene() == null) {
+            stage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
+        } else {
+            stage.getScene().setRoot(root);
+        }
     }
 
     public static void main(String[] args) {
