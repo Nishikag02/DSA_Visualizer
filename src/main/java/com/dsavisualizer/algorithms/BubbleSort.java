@@ -3,137 +3,82 @@ package com.dsavisualizer.algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bubble Sort engine. It does NOT draw anything: it runs the algorithm on a
+ * copy of the array and records a SortStep after every interesting moment.
+ *
+ * Pseudocode lines used (see SortAlgorithm.BUBBLE):
+ *   4 = compare arr[j] and arr[j+1]
+ *   5 = swap
+ *   7 = end of a pass
+ *   8 = finished
+ */
 public class BubbleSort {
 
-    public static class Step {
+    public List<SortStep> getSteps(int[] array) {
 
-        public int[] array;
-        public int firstIndex;
-        public int secondIndex;
-        public boolean swapped;
-        public boolean wrongOrder;
-        public int codeLine;
-        public int sortedFrom;
+        List<SortStep> steps = new ArrayList<>();
 
-        public Step(
-                int[] array,
-                int firstIndex,
-                int secondIndex,
-                boolean swapped,
-                boolean wrongOrder,
-                int codeLine,
-                int sortedFrom
-        ) {
-            this.array = array;
-            this.firstIndex = firstIndex;
-            this.secondIndex = secondIndex;
-            this.swapped = swapped;
-            this.wrongOrder = wrongOrder;
-            this.codeLine = codeLine;
-            this.sortedFrom = sortedFrom;
-        }
-    }
+        int[] copy = array.clone();
+        int n = copy.length;
 
-    public List<Step> getSteps(int[] array) {
-
-        List<Step> steps =
-                new ArrayList<>();
-
-        int[] copy =
-                array.clone();
-
-        int n =
-                copy.length;
-
+        // Elements at index >= sortedFrom are permanently sorted
         int sortedFrom = n;
 
         for (int i = 0; i < n - 1; i++) {
 
             boolean swappedInPass = false;
 
-            for (
-                    int j = 0;
-                    j < n - i - 1;
-                    j++
-            ) {
+            for (int j = 0; j < n - i - 1; j++) {
 
-                boolean wrongOrder =
-                        copy[j] > copy[j + 1];
+                int left = copy[j];
+                int right = copy[j + 1];
+                boolean wrongOrder = left > right;
 
                 // Comparison step
-                steps.add(
-                        new Step(
-                                copy.clone(),
-                                j,
-                                j + 1,
-                                false,
-                                wrongOrder,
-                                4,
-                                sortedFrom
-                        )
-                );
+                steps.add(new SortStep(copy, 4, "Comparing elements",
+                        "Comparing " + left + " and " + right + ". "
+                                + (wrongOrder
+                                ? left + " is larger, so a swap is needed."
+                                : "They are already in the correct order."))
+                        .withActive(j)
+                        .withCompare(j + 1)
+                        .withWrongOrder(wrongOrder)
+                        .withSorted(sortedFrom, n));
 
                 if (wrongOrder) {
 
-                    int temp =
-                            copy[j];
-
-                    copy[j] =
-                            copy[j + 1];
-
-                    copy[j + 1] =
-                            temp;
-
+                    copy[j] = right;
+                    copy[j + 1] = left;
                     swappedInPass = true;
 
-                    // Swap step
-                    steps.add(
-                            new Step(
-                                    copy.clone(),
-                                    j,
-                                    j + 1,
-                                    true,
-                                    true,
-                                    5,
-                                    sortedFrom
-                            )
-                    );
+                    // Swap step (array already holds the swapped values)
+                    steps.add(new SortStep(copy, 5, "Swapping elements",
+                            "The elements are in the wrong order, "
+                                    + "so they smoothly exchange positions.")
+                            .withActive(j)
+                            .withCompare(j + 1)
+                            .withWrongOrder(true)
+                            .withSwapping()
+                            .withSorted(sortedFrom, n));
                 }
             }
 
             // One more element is now permanently sorted
-            sortedFrom =
-                    n - i - 1;
+            sortedFrom = n - i - 1;
 
-            steps.add(
-                    new Step(
-                            copy.clone(),
-                            -1,
-                            -1,
-                            false,
-                            false,
-                            7,
-                            sortedFrom
-                    )
-            );
+            steps.add(new SortStep(copy, 7, "Pass completed",
+                    "The largest remaining element has reached its correct position.")
+                    .withSorted(sortedFrom, n));
 
             if (!swappedInPass) {
                 break;
             }
         }
 
-        // Final state
-        steps.add(
-                new Step(
-                        copy.clone(),
-                        -1,
-                        -1,
-                        false,
-                        false,
-                        8,
-                        0
-                )
-        );
+        steps.add(new SortStep(copy, 8, "Sorting complete!",
+                "Bubble Sort has finished. All elements are now sorted.")
+                .withComplete());
 
         return steps;
     }

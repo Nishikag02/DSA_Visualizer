@@ -1,12 +1,11 @@
 package com.dsavisualizer.view;
 
+import com.dsavisualizer.algorithms.SortAlgorithm;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.BorderPane;
-
 
 public class AlgorithmSelectionView {
 
@@ -20,19 +19,19 @@ public class AlgorithmSelectionView {
         Label sortingLabel = new Label("SORTING");
         sortingLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
+        // All three sorting buttons open the SAME visualizer,
+        // only the SortAlgorithm constant is different.
         Button bubbleSortButton = new Button("Bubble Sort");
+        bubbleSortButton.setOnAction(event ->
+                openSort(SortAlgorithm.BUBBLE, bubbleSortButton));
+
         Button selectionSortButton = new Button("Selection Sort");
-        selectionSortButton.setOnAction(event -> {
+        selectionSortButton.setOnAction(event ->
+                openSort(SortAlgorithm.SELECTION, selectionSortButton));
 
-            SelectionSortView selectionSortView =
-                    new SelectionSortView();
-
-            VBox layout =
-                    selectionSortView.createView();
-
-            selectionSortButton.getScene().setRoot(layout);
-        });
         Button insertionSortButton = new Button("Insertion Sort");
+        insertionSortButton.setOnAction(event ->
+                openSort(SortAlgorithm.INSERTION, insertionSortButton));
 
         // Searching section
         Label searchingLabel = new Label("SEARCHING");
@@ -41,20 +40,8 @@ public class AlgorithmSelectionView {
         Button linearSearchButton = new Button("Linear Search");
         Button binarySearchButton = new Button("Binary Search");
 
-        // Back button
+        // Back button (not connected yet)
         Button backButton = new Button("← Back");
-
-        // Bubble Sort navigation
-        bubbleSortButton.setOnAction(event -> {
-
-            VisualizerView visualizerView =
-                    new VisualizerView();
-
-            BorderPane layout =
-                    visualizerView.createView();
-
-            bubbleSortButton.getScene().setRoot(layout);
-        });
 
         // Layout
         VBox layout = new VBox(
@@ -73,5 +60,13 @@ public class AlgorithmSelectionView {
         layout.setAlignment(Pos.CENTER);
 
         return layout;
+    }
+
+    /** Builds the shared visualizer for one algorithm and shows it. */
+    private void openSort(SortAlgorithm algorithm, Button source) {
+
+        VisualizerView view = new VisualizerView(algorithm);
+
+        source.getScene().setRoot(view.createView());
     }
 }

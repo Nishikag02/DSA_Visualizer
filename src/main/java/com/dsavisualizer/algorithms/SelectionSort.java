@@ -3,89 +3,96 @@ package com.dsavisualizer.algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Selection Sort engine (generates SortStep snapshots).
+ *
+ * Pseudocode lines used (see SortAlgorithm.SELECTION):
+ *   3 = min = i
+ *   5 = compare arr[j] with arr[min]
+ *   6 = min = j
+ *   9 = swap arr[i] and arr[min]
+ *   10 = end of pass / finished
+ *
+ * Colours: active (i) and compare (j) = yellow, key (current minimum) = blue.
+ */
 public class SelectionSort {
 
-    public static class Step {
+    public List<SortStep> getSteps(int[] array) {
 
-        public int[] array;
-        public int currentIndex;
-        public int minimumIndex;
-        public boolean swapped;
-        public int sortedFrom;
-
-        public Step(
-                int[] array,
-                int currentIndex,
-                int minimumIndex,
-                boolean swapped,
-                int sortedFrom
-        ) {
-            this.array = array;
-            this.currentIndex = currentIndex;
-            this.minimumIndex = minimumIndex;
-            this.swapped = swapped;
-            this.sortedFrom = sortedFrom;
-        }
-    }
-
-    public List<Step> getSteps(int[] array) {
-
-        List<Step> steps = new ArrayList<>();
+        List<SortStep> steps = new ArrayList<>();
 
         int[] copy = array.clone();
         int n = copy.length;
 
         for (int i = 0; i < n - 1; i++) {
 
-            int minimumIndex = i;
+            int min = i;
+
+            steps.add(new SortStep(copy, 3, "Starting pass",
+                    "Assume " + copy[i] + " at index " + i
+                            + " is the smallest value so far.")
+                    .withActive(i)
+                    .withKey(min)
+                    .withSorted(0, i));
 
             for (int j = i + 1; j < n; j++) {
 
-                // Show comparison
-                steps.add(
-                        new Step(
-                                copy.clone(),
-                                i,
-                                j,
-                                false,
-                                i
-                        )
-                );
+                boolean smaller = copy[j] < copy[min];
 
-                if (copy[j] < copy[minimumIndex]) {
-                    minimumIndex = j;
+                steps.add(new SortStep(copy, 5, "Comparing elements",
+                        "Comparing " + copy[j] + " with the current minimum "
+                                + copy[min] + ". "
+                                + (smaller
+                                ? copy[j] + " is smaller, so it becomes the new minimum."
+                                : copy[min] + " stays the minimum."))
+                        .withActive(i)
+                        .withCompare(j)
+                        .withKey(min)
+                        .withSorted(0, i));
+
+                if (smaller) {
+                    min = j;
+
+                    steps.add(new SortStep(copy, 6, "New minimum found",
+                            "The minimum is now " + copy[min]
+                                    + " at index " + min + ".")
+                            .withActive(i)
+                            .withKey(min)
+                            .withSorted(0, i));
                 }
             }
 
-            // Swap minimum element into correct position
-            if (minimumIndex != i) {
+            if (min != i) {
+
+                int smallest = copy[min];
 
                 int temp = copy[i];
-                copy[i] = copy[minimumIndex];
-                copy[minimumIndex] = temp;
+                copy[i] = copy[min];
+                copy[min] = temp;
 
-                steps.add(
-                        new Step(
-                                copy.clone(),
-                                i,
-                                minimumIndex,
-                                true,
-                                i
-                        )
-                );
+                steps.add(new SortStep(copy, 9, "Swapping elements",
+                        "Swap the minimum " + smallest
+                                + " into position " + i + ".")
+                        .withActive(i)
+                        .withCompare(min)
+                        .withSwapping()
+                        .withSorted(0, i));
+            } else {
+                steps.add(new SortStep(copy, 9, "No swap needed",
+                        copy[i] + " is already the smallest remaining value.")
+                        .withActive(i)
+                        .withSorted(0, i));
             }
+
+            steps.add(new SortStep(copy, 10, "Pass completed",
+                    "Position " + i + " now holds its final value, "
+                            + copy[i] + ".")
+                    .withSorted(0, i + 1));
         }
 
-        // Final sorted state
-        steps.add(
-                new Step(
-                        copy.clone(),
-                        -1,
-                        -1,
-                        false,
-                        n
-                )
-        );
+        steps.add(new SortStep(copy, 10, "Sorting complete!",
+                "Selection Sort has finished. All elements are now sorted.")
+                .withComplete());
 
         return steps;
     }
