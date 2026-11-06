@@ -15,8 +15,29 @@ import java.util.List;
  *
  * Colours: active (i) and compare (j) = yellow, key (current minimum) = blue.
  */
-public class SelectionSort {
+public class SelectionSort extends SortAlgorithm {
 
+    public SelectionSort() {
+        super(
+                "Selection Sort",
+                "Find the smallest remaining value and place it at the front",
+                "Selection Sort finds the minimum of the unsorted part and swaps it into place.",
+                new String[]{
+                        "int[] arr = {5, 2, 8, 1, 6};",
+                        "for (int i = 0; i < n - 1; i++) {",
+                        "    int min = i;",
+                        "    for (int j = i + 1; j < n; j++) {",
+                        "        if (arr[j] < arr[min]) {",
+                        "            min = j;",
+                        "        }",
+                        "    }",
+                        "    swap(arr[i], arr[min]);",
+                        "}"
+                }
+        );
+    }
+
+    @Override
     public List<SortStep> getSteps(int[] array) {
 
         List<SortStep> steps = new ArrayList<>();

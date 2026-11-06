@@ -13,8 +13,27 @@ import java.util.List;
  *   7 = end of a pass
  *   8 = finished
  */
-public class BubbleSort {
+public class BubbleSort extends SortAlgorithm {
 
+    public BubbleSort() {
+        super(
+                "Bubble Sort",
+                "Compare adjacent elements and move larger values to the end",
+                "Bubble Sort repeatedly compares neighboring elements.",
+                new String[]{
+                        "int[] arr = {5, 2, 8, 1, 6};",
+                        "for (int i = 0; i < n - 1; i++) {",
+                        "    for (int j = 0; j < n - i - 1; j++) {",
+                        "        if (arr[j] > arr[j + 1]) {",
+                        "            swap(arr[j], arr[j + 1]);",
+                        "        }",
+                        "    }",
+                        "}"
+                }
+        );
+    }
+
+    @Override
     public List<SortStep> getSteps(int[] array) {
 
         List<SortStep> steps = new ArrayList<>();

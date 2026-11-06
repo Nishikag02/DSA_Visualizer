@@ -19,8 +19,8 @@ import javafx.scene.control.Slider;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+
+
 import javafx.scene.layout.VBox;
 
 import javafx.util.Duration;
@@ -38,7 +38,7 @@ import java.util.List;
  * "index" is the position in the steps list of the step currently shown.
  * index == -1 means "nothing shown yet" (initial array).
  */
-public class VisualizerView {
+public class VisualizerView implements AppScreen {
 
     private static final double CARD_SIZE = 72;
     private static final double CARD_GAP = 14;
@@ -72,14 +72,15 @@ public class VisualizerView {
     private boolean playing = false;
     private boolean animating = false;
 
-    /** Passed along to the menu so its Back button can reach the dashboard. */
-    private final Runnable onBackToDashboard;
+    /** Passed along to the sidebar so "← Menu" and "← Back" can reach the dashboard. */
+    private final Navigator navigator;
 
-    public VisualizerView(SortAlgorithm algorithm, Runnable onBackToDashboard) {
+    public VisualizerView(SortAlgorithm algorithm, Navigator navigator) {
         this.algorithm = algorithm;
-        this.onBackToDashboard = onBackToDashboard;
+        this.navigator = navigator;
     }
 
+    @Override
     public BorderPane createView() {
 
         root = new BorderPane();
@@ -92,80 +93,11 @@ public class VisualizerView {
         // LEFT SIDEBAR
         // =========================
 
-        VBox sidebar = new VBox(18);
-
-        sidebar.setPrefWidth(210);
-
-        sidebar.setPadding(
-                new Insets(25, 15, 25, 15)
-        );
-
-        sidebar.setStyle(
-                "-fx-background-color: #111114;" +
-                        "-fx-border-color: #252529;" +
-                        "-fx-border-width: 0 1px 0 0;"
-        );
-
-        Label appTitle = new Label("DSA VISUAL");
-
-        appTitle.setStyle(
-                "-fx-font-size: 20px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-text-fill: white;"
-        );
-
-        Label sortingTitle = new Label("SORTING");
-
-        sortingTitle.setStyle(
-                "-fx-font-size: 12px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-text-fill: #77777f;"
-        );
-
-        sidebar.getChildren().addAll(appTitle, sortingTitle);
-
-        // One sidebar button per sorting algorithm (built from the enum)
-        for (SortAlgorithm other : SortAlgorithm.values()) {
-
-            Button button = createAlgorithmButton(
-                    other.getDisplayName(),
-                    other == algorithm
-            );
-
-            button.setOnAction(event -> {
-                if (other != algorithm) {
-                    openAlgorithm(other);
-                }
-            });
-
-            sidebar.getChildren().add(button);
-        }
-
-        Label searchingTitle = new Label("SEARCHING");
-
-        searchingTitle.setStyle(
-                "-fx-font-size: 12px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-text-fill: #77777f;"
-        );
-
-        Button linearButton = createAlgorithmButton("Linear Search", false);
-        Button binaryButton = createAlgorithmButton("Binary Search", false);
-
-        // Pushes the Back button to the bottom of the sidebar
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
-
-        Button backButton = createControlButton("← Menu");
-        backButton.setMaxWidth(Double.MAX_VALUE);
-        backButton.setOnAction(event -> goBackToMenu());
-
-        sidebar.getChildren().addAll(
-                searchingTitle,
-                linearButton,
-                binaryButton,
-                spacer,
-                backButton
+        // The sidebar is shared with the searching screen (see Sidebar.java)
+        VBox sidebar = Sidebar.create(
+                algorithm.getDisplayName(),
+                navigator,
+                this
         );
 
         // =========================
@@ -259,9 +191,7 @@ public class VisualizerView {
         // Pseudocode comes from the selected algorithm
         String[] code = algorithm.getCode();
 
-        for (int i = 0; i < code.length; i++) {
-            addCodeLine(String.valueOf(i + 1), code[i]);
-        }
+        Styles.fillCodeBox(codeBox, code);
 
         ScrollPane codeScroll = new ScrollPane(codeBox);
 
@@ -296,10 +226,10 @@ public class VisualizerView {
         // CONTROLS
         // =========================
 
-        Button resetButton = createControlButton("↶ Reset");
-        Button previousButton = createControlButton("◀ Previous");
-        playButton = createControlButton("▶ Play");
-        Button nextButton = createControlButton("Next ▶");
+        Button resetButton = Styles.createControlButton("↶ Reset");
+        Button previousButton = Styles.createControlButton("◀ Previous");
+        playButton = Styles.createControlButton("▶ Play");
+        Button nextButton = Styles.createControlButton("Next ▶");
 
         Label speedText = new Label("Speed");
 
@@ -390,27 +320,13 @@ public class VisualizerView {
     }
 
     // =====================================================
-    // NAVIGATION
+    // STOPPING (called by the sidebar before it switches screen)
     // =====================================================
 
-    /** Replaces this screen with a new visualizer for another algorithm. */
-    private void openAlgorithm(SortAlgorithm other) {
-
+    /** Called by the sidebar before another screen replaces this one. */
+    @Override
+    public void stop() {
         stopEverything();
-
-        VisualizerView view = new VisualizerView(other, onBackToDashboard);
-
-        root.getScene().setRoot(view.createView());
-    }
-
-    /** Returns to the algorithm selection screen. */
-    private void goBackToMenu() {
-
-        stopEverything();
-
-        AlgorithmSelectionView menu = new AlgorithmSelectionView(onBackToDashboard);
-
-        root.getScene().setRoot(menu.createView());
     }
 
     /** Stops the timeline and any running card animation. */
@@ -726,33 +642,7 @@ public class VisualizerView {
 
     private void highlightCodeLine(int selectedLine) {
 
-        for (int i = 0; i < codeBox.getChildren().size(); i++) {
-
-            Label line = (Label) codeBox.getChildren().get(i);
-
-            int lineNumber = i + 1;
-
-            if (lineNumber == selectedLine) {
-
-                line.setStyle(
-                        "-fx-font-family: 'Consolas';" +
-                                "-fx-font-size: 13px;" +
-                                "-fx-text-fill: white;" +
-                                "-fx-background-color: #292930;" +
-                                "-fx-background-radius: 5px;" +
-                                "-fx-padding: 5px;"
-                );
-
-            } else {
-
-                line.setStyle(
-                        "-fx-font-family: 'Consolas';" +
-                                "-fx-font-size: 13px;" +
-                                "-fx-text-fill: #b8b8c0;" +
-                                "-fx-padding: 5px;"
-                );
-            }
-        }
+        Styles.highlightCodeLine(codeBox, selectedLine);
     }
 
     // =====================================================
@@ -792,83 +682,5 @@ public class VisualizerView {
     // Key / current minimum (new colour, blue)
     private void setKeyCardStyle(Label card) {
         setCardStyle(card, "#1b2a4d", "#6b94ff");
-    }
-
-    // =====================================================
-    // SIDEBAR BUTTON
-    // =====================================================
-
-    private Button createAlgorithmButton(String text, boolean selected) {
-
-        Button button = new Button(text);
-
-        button.setMaxWidth(Double.MAX_VALUE);
-
-        if (selected) {
-
-            button.setStyle(
-                    "-fx-font-size: 14px;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-background-color: #27272c;" +
-                            "-fx-background-radius: 7px;" +
-                            "-fx-alignment: CENTER_LEFT;" +
-                            "-fx-padding: 10px;"
-            );
-
-        } else {
-
-            button.setStyle(
-                    "-fx-font-size: 14px;" +
-                            "-fx-text-fill: #9999a1;" +
-                            "-fx-background-color: transparent;" +
-                            "-fx-alignment: CENTER_LEFT;" +
-                            "-fx-padding: 10px;"
-            );
-        }
-
-        return button;
-    }
-
-    // =====================================================
-    // CONTROL BUTTON
-    // =====================================================
-
-    private Button createControlButton(String text) {
-
-        Button button = new Button(text);
-
-        button.setStyle(
-                "-fx-font-size: 13px;" +
-                        "-fx-text-fill: #d4d4d8;" +
-                        "-fx-background-color: #1a1a1e;" +
-                        "-fx-border-color: #35353b;" +
-                        "-fx-border-radius: 7px;" +
-                        "-fx-background-radius: 7px;" +
-                        "-fx-padding: 9px 14px;"
-        );
-
-        return button;
-    }
-
-    // =====================================================
-    // CODE LINE
-    // =====================================================
-
-    private void addCodeLine(String number, String code) {
-
-        Label line = new Label(
-                String.format("%2s    %s", number, code)
-        );
-
-        line.setMaxWidth(Double.MAX_VALUE);
-
-        line.setStyle(
-                "-fx-font-family: 'Consolas';" +
-                        "-fx-font-size: 13px;" +
-                        "-fx-text-fill: #b8b8c0;" +
-                        "-fx-padding: 5px;"
-        );
-
-        codeBox.getChildren().add(line);
     }
 }

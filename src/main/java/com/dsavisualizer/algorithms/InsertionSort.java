@@ -18,8 +18,29 @@ import java.util.List;
  * the same as shifting, and lets us reuse the same two-card slide animation.
  * keyIndex always tells the view where the key card currently is.
  */
-public class InsertionSort {
+public class InsertionSort extends SortAlgorithm {
 
+    public InsertionSort() {
+        super(
+                "Insertion Sort",
+                "Insert each value into its correct place in the sorted left part",
+                "Insertion Sort builds a sorted section one element at a time.",
+                new String[]{
+                        "int[] arr = {5, 2, 8, 1, 6};",
+                        "for (int i = 1; i < n; i++) {",
+                        "    int key = arr[i];",
+                        "    int j = i - 1;",
+                        "    while (j >= 0 && arr[j] > key) {",
+                        "        arr[j + 1] = arr[j];",
+                        "        j--;",
+                        "    }",
+                        "    arr[j + 1] = key;",
+                        "}"
+                }
+        );
+    }
+
+    @Override
     public List<SortStep> getSteps(int[] array) {
 
         List<SortStep> steps = new ArrayList<>();
