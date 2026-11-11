@@ -1,0 +1,207 @@
+/* =====================================================================
+   DSA Visualizer - dark theme.
+   Loaded once by Main (scene.getStylesheets().add(...)) and also by every
+   Alert dialog, so the whole app looks the same.
+   Java code gives a node a "style class", for example
+   button.getStyleClass().add("control-button"), and this file decides how
+   that class looks (including the :hover effect).
+   ===================================================================== */
+
+/* ---------- Buttons ---------- */
+
+/* Sidebar algorithm buttons */
+.button.sidebar-button,
+.button.sidebar-button-selected {
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8 10 8 10;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-cursor: hand;
+}
+
+.button.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9999a1;
+}
+
+.button.sidebar-button:hover {
+    -fx-background-color: #1a1a1e;
+    -fx-text-fill: white;
+}
+
+.button.sidebar-button-selected {
+    -fx-background-color: #27272c;
+    -fx-text-fill: white;
+}
+
+/* Dark rounded buttons: Reset, Previous, Play, Next, Apply, Push, menu items ... */
+.button.control-button {
+    -fx-font-size: 13px;
+    -fx-text-fill: #d4d4d8;
+    -fx-background-color: #1a1a1e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-border-color: #35353b;
+    -fx-border-radius: 7;
+    -fx-padding: 9 14 9 14;
+    -fx-cursor: hand;
+}
+
+.button.control-button:hover {
+    -fx-background-color: #25252b;
+    -fx-text-fill: white;
+}
+
+.button.control-button:pressed {
+    -fx-background-color: #2e2e36;
+}
+
+.button.control-button:disabled {
+    -fx-opacity: 0.4;
+}
+
+/* The big button on the dashboard */
+.button.primary-button {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0b0b0d;
+    -fx-background-color: #e4e4e7;
+    -fx-background-insets: 0;
+    -fx-background-radius: 10;
+    -fx-padding: 14 36 14 36;
+    -fx-cursor: hand;
+}
+
+.button.primary-button:hover {
+    -fx-background-color: white;
+}
+
+/* ---------- Scroll bars: thin and dark ---------- */
+
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar:vertical {
+    -fx-pref-width: 10;
+}
+
+.scroll-bar > .track {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar > .thumb {
+    -fx-background-color: #34343b;
+    -fx-background-insets: 2;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar > .thumb:hover {
+    -fx-background-color: #4a4a54;
+}
+
+.scroll-bar > .increment-button,
+.scroll-bar > .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.scroll-bar > .increment-button > .increment-arrow,
+.scroll-bar > .decrement-button > .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: transparent;
+}
+
+/* ---------- Speed slider ---------- */
+
+.slider .track {
+    -fx-background-color: #2b2b30;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3;
+    -fx-padding: 2;
+}
+
+.slider .thumb {
+    -fx-background-color: #d4d4d8;
+    -fx-background-insets: 0;
+    -fx-background-radius: 8;
+    -fx-padding: 7;
+}
+
+.slider:focused .thumb {
+    -fx-background-color: white;
+}
+
+/* ---------- ComboBox (start node) ---------- */
+
+.combo-box .arrow {
+    -fx-background-color: #9999a1;
+}
+
+.combo-box-popup > .list-view {
+    -fx-background-color: #151518;
+    -fx-border-color: #35353b;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #151518;
+    -fx-text-fill: white;
+}
+
+.combo-box-popup .list-cell:filled:hover {
+    -fx-background-color: #27272c;
+}
+
+.combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: #2e2e36;
+}
+
+/* ---------- Alert dialogs ---------- */
+
+.dialog-pane {
+    -fx-background-color: #151518;
+}
+
+.dialog-pane > .content.label {
+    -fx-text-fill: #d4d4d8;
+    -fx-font-size: 14px;
+}
+
+.dialog-pane:header > .header-panel {
+    -fx-background-color: #1a1a1e;
+    -fx-padding: 14;
+}
+
+.dialog-pane:header > .header-panel > .label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane > .button-bar > .container {
+    -fx-background-color: #151518;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #1a1a1e;
+    -fx-text-fill: #d4d4d8;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+    -fx-border-color: #35353b;
+    -fx-border-radius: 7;
+    -fx-padding: 8 20 8 20;
+}
+
+.dialog-pane .button:default {
+    -fx-background-color: #e4e4e7;
+    -fx-text-fill: #0b0b0d;
+}

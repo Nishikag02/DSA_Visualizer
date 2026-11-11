@@ -390,6 +390,8 @@ public class SearchView implements AppScreen {
             alert.setHeaderText("Please check your input");
             alert.setContentText(e.getMessage());
 
+            Styles.applyDarkTheme(alert);
+
             alert.showAndWait();
         }
     }

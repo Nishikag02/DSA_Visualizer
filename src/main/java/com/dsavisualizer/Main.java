@@ -1,15 +1,29 @@
 package com.dsavisualizer;
 
+import com.dsavisualizer.algorithms.AlgorithmRegistry;
 import com.dsavisualizer.view.AlgorithmSelectionView;
 import com.dsavisualizer.view.Navigator;
+import com.dsavisualizer.view.ScreenSwitcher;
+import com.dsavisualizer.view.Styles;
+
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * The Application class: JavaFX starts here. It creates the Stage (the
+ * window) and the Scene, and shows the dashboard first.
+ *
+ * Main implements the Navigator interface, so the other screens can ask it
+ * to show the dashboard again (the "← Back" button).
+ */
 public class Main extends javafx.application.Application implements Navigator {
 
     // Window size used for every screen. Change it here, in one place.
@@ -41,26 +55,55 @@ public class Main extends javafx.application.Application implements Navigator {
     @Override
     public void showDashboard() {
 
-        BorderPane root = new BorderPane();
-
         Label title = new Label("DSA VISUALIZER");
-        title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
+        title.setStyle(
+                "-fx-font-size: 52px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: white;"
+        );
 
-        Label subtitle = new Label("Learn • Explore • Visualize");
-        subtitle.setStyle("-fx-font-size: 14px;");
+        Label subtitle = new Label("Learn  •  Explore  •  Visualize");
+        subtitle.setStyle(
+                "-fx-font-size: 17px;" +
+                        "-fx-text-fill: #85858d;"
+        );
 
-        VBox header = new VBox(5, title, subtitle);
-        header.setAlignment(Pos.CENTER);
+        // Small badges showing what the app contains (the numbers come from the registry)
+        HBox badges = new HBox(10,
+                createBadge("Sorting", AlgorithmRegistry.getSortAlgorithms().size()),
+                createBadge("Searching", AlgorithmRegistry.getSearchAlgorithms().size()),
+                createBadge("Data Structures", AlgorithmRegistry.getDataStructures().size()),
+                createBadge("Graphs", AlgorithmRegistry.getGraphAlgorithms().size())
+        );
 
-        Button startButton = new Button("Start Visualizing");
+        badges.setAlignment(Pos.CENTER);
 
-        VBox center = new VBox(20, startButton);
-        center.setAlignment(Pos.CENTER);
-
-        root.setTop(header);
-        root.setCenter(center);
+        Button startButton = Styles.createPrimaryButton("Start Visualizing");
 
         startButton.setOnAction(event -> showAlgorithmSelection());
+
+        VBox center = new VBox(22, title, subtitle, badges, startButton);
+
+        center.setAlignment(Pos.CENTER);
+
+        // A bit more room above the button
+        VBox.setMargin(startButton, new Insets(18, 0, 0, 0));
+
+        Label footer = new Label("UCS553 - Enterprise Web Application   |   Built with Java and JavaFX");
+        footer.setStyle(
+                "-fx-font-size: 12px;" +
+                        "-fx-text-fill: #55555c;"
+        );
+
+        BorderPane root = new BorderPane();
+
+        root.setStyle("-fx-background-color: #0b0b0d;");
+
+        root.setCenter(center);
+        root.setBottom(footer);
+
+        BorderPane.setAlignment(footer, Pos.CENTER);
+        BorderPane.setMargin(footer, new Insets(0, 0, 20, 0));
 
         showScene(root);
     }
@@ -71,22 +114,51 @@ public class Main extends javafx.application.Application implements Navigator {
         // calls navigator.showDashboard() when its Back button is clicked.
         AlgorithmSelectionView view = new AlgorithmSelectionView(this);
 
-        VBox layout = view.createView();
-
-        showScene(layout);
+        showScene(view.createView());
     }
 
     /**
-     * Puts a screen into the window. If the window is already open, it keeps
-     * its current size (so a resized or maximized window stays that way).
+     * Puts a screen into the window. The first time, the Scene is created and
+     * the stylesheet is added to it. After that, the existing Scene keeps its
+     * size (so a resized or maximized window stays that way) and only its root
+     * is replaced, with a fade.
      */
-    private void showScene(javafx.scene.Parent root) {
+    private void showScene(Parent root) {
 
         if (stage.getScene() == null) {
-            stage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
+
+            Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+            String css = Styles.stylesheet();
+
+            if (css != null) {
+                scene.getStylesheets().add(css);
+            }
+
+            stage.setScene(scene);
+
         } else {
-            stage.getScene().setRoot(root);
+
+            ScreenSwitcher.show(stage.getScene(), root);
         }
+    }
+
+    /** A small rounded badge such as "Sorting  6". */
+    private Label createBadge(String text, int count) {
+
+        Label badge = new Label(text + "  " + count);
+
+        badge.setStyle(
+                "-fx-font-size: 12px;" +
+                        "-fx-text-fill: #b5b5bd;" +
+                        "-fx-padding: 6px 12px;" +
+                        "-fx-background-color: #151518;" +
+                        "-fx-background-radius: 14px;" +
+                        "-fx-border-color: #2b2b30;" +
+                        "-fx-border-radius: 14px;"
+        );
+
+        return badge;
     }
 
     public static void main(String[] args) {

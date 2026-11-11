@@ -1,5 +1,6 @@
 package com.dsavisualizer.view;
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -15,52 +16,58 @@ public final class Styles {
     private Styles() {
     }
 
-    /** Sidebar button. The selected one gets a lighter background. */
+    /**
+     * Path of the stylesheet (src/main/resources/styles.css), or null if it
+     * cannot be found. getResource looks inside the compiled project.
+     */
+    public static String stylesheet() {
+
+        java.net.URL url = Styles.class.getResource("/styles.css");
+
+        return (url == null) ? null : url.toExternalForm();
+    }
+
+    /** Gives an Alert dialog the same dark look as the rest of the app. */
+    public static void applyDarkTheme(Alert alert) {
+
+        String css = stylesheet();
+
+        if (css != null) {
+            alert.getDialogPane().getStylesheets().add(css);
+        }
+    }
+
+    /**
+     * Sidebar button. The look (and the hover effect) is written in
+     * styles.css; here we only choose the style class.
+     */
     public static Button createAlgorithmButton(String text, boolean selected) {
 
         Button button = new Button(text);
 
         button.setMaxWidth(Double.MAX_VALUE);
 
-        if (selected) {
-
-            button.setStyle(
-                    "-fx-font-size: 14px;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-background-color: #27272c;" +
-                            "-fx-background-radius: 7px;" +
-                            "-fx-alignment: CENTER_LEFT;" +
-                            "-fx-padding: 8px 10px;"
-            );
-
-        } else {
-
-            button.setStyle(
-                    "-fx-font-size: 14px;" +
-                            "-fx-text-fill: #9999a1;" +
-                            "-fx-background-color: transparent;" +
-                            "-fx-alignment: CENTER_LEFT;" +
-                            "-fx-padding: 8px 10px;"
-            );
-        }
+        button.getStyleClass().add(selected ? "sidebar-button-selected" : "sidebar-button");
 
         return button;
     }
 
-    /** Dark rounded button used for Reset / Previous / Play / Next / Apply. */
+    /** Dark rounded button used for Reset / Previous / Play / Next / Apply / menu items. */
     public static Button createControlButton(String text) {
 
         Button button = new Button(text);
 
-        button.setStyle(
-                "-fx-font-size: 13px;" +
-                        "-fx-text-fill: #d4d4d8;" +
-                        "-fx-background-color: #1a1a1e;" +
-                        "-fx-border-color: #35353b;" +
-                        "-fx-border-radius: 7px;" +
-                        "-fx-background-radius: 7px;" +
-                        "-fx-padding: 9px 14px;"
-        );
+        button.getStyleClass().add("control-button");
+
+        return button;
+    }
+
+    /** The big white button on the dashboard. */
+    public static Button createPrimaryButton(String text) {
+
+        Button button = new Button(text);
+
+        button.getStyleClass().add("primary-button");
 
         return button;
     }

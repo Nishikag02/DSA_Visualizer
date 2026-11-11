@@ -6,6 +6,7 @@ import com.dsavisualizer.algorithms.SearchAlgorithm;
 import com.dsavisualizer.algorithms.SortAlgorithm;
 import com.dsavisualizer.structures.DataStructure;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,13 +14,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * The "Choose an Algorithm" menu. It implements the AppScreen interface,
+ * The "Choose a visualization" menu. It implements the AppScreen interface,
  * like the sorting, searching, data structure and graph screens.
  *
- * The menu has four COLUMNS (an HBox of VBoxes): Sorting, Searching, Data
- * Structures and Graphs. The buttons are created in loops over the lists in
- * AlgorithmRegistry, so a new algorithm or data structure shows up here
- * automatically.
+ * The menu has four CARDS side by side (an HBox of VBoxes): Sorting,
+ * Searching, Data Structures and Graphs. The buttons are created in loops
+ * over the lists in AlgorithmRegistry, so a new algorithm or data structure
+ * shows up here automatically.
  */
 public class AlgorithmSelectionView implements AppScreen {
 
@@ -33,90 +34,123 @@ public class AlgorithmSelectionView implements AppScreen {
     @Override
     public VBox createView() {
 
-        // Title
-        Label title = new Label("Choose an Algorithm");
-        title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
+        // Title and subtitle
+        Label title = new Label("Choose a visualization");
+        title.setStyle(
+                "-fx-font-size: 30px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: white;"
+        );
 
-        // ----- Column 1: sorting -----
+        Label subtitle = new Label("Pick an algorithm or data structure and watch it step by step");
+        subtitle.setStyle(
+                "-fx-font-size: 14px;" +
+                        "-fx-text-fill: #85858d;"
+        );
+
+        // ----- Card 1: sorting -----
         // All sorting buttons open the SAME screen (VisualizerView);
         // only the SortAlgorithm object is different.
-        VBox sortingColumn = createColumn("SORTING");
+        VBox sortingCard = createCard("SORTING");
 
         for (SortAlgorithm algorithm : AlgorithmRegistry.getSortAlgorithms()) {
 
-            Button button = new Button(algorithm.getDisplayName());
+            Button button = createMenuButton(algorithm.getDisplayName());
 
-            button.setOnAction(event -> button.getScene().setRoot(
+            button.setOnAction(event -> ScreenSwitcher.show(button.getScene(),
                     new VisualizerView(algorithm, navigator).createView()));
 
-            sortingColumn.getChildren().add(button);
+            sortingCard.getChildren().add(button);
         }
 
-        // ----- Column 2: searching (all open SearchView) -----
-        VBox searchingColumn = createColumn("SEARCHING");
+        // ----- Card 2: searching (all open SearchView) -----
+        VBox searchingCard = createCard("SEARCHING");
 
         for (SearchAlgorithm algorithm : AlgorithmRegistry.getSearchAlgorithms()) {
 
-            Button button = new Button(algorithm.getDisplayName());
+            Button button = createMenuButton(algorithm.getDisplayName());
 
-            button.setOnAction(event -> button.getScene().setRoot(
+            button.setOnAction(event -> ScreenSwitcher.show(button.getScene(),
                     new SearchView(algorithm, navigator).createView()));
 
-            searchingColumn.getChildren().add(button);
+            searchingCard.getChildren().add(button);
         }
 
-        // ----- Column 3: data structures (all open StructureView) -----
-        VBox structuresColumn = createColumn("DATA STRUCTURES");
+        // ----- Card 3: data structures (all open StructureView) -----
+        VBox structuresCard = createCard("DATA STRUCTURES");
 
         for (DataStructure structure : AlgorithmRegistry.getDataStructures()) {
 
-            Button button = new Button(structure.getDisplayName());
+            Button button = createMenuButton(structure.getDisplayName());
 
-            button.setOnAction(event -> button.getScene().setRoot(
+            button.setOnAction(event -> ScreenSwitcher.show(button.getScene(),
                     new StructureView(structure, navigator).createView()));
 
-            structuresColumn.getChildren().add(button);
+            structuresCard.getChildren().add(button);
         }
 
-        // ----- Column 4: graphs (all open GraphView) -----
-        VBox graphsColumn = createColumn("GRAPHS");
+        // ----- Card 4: graphs (all open GraphView) -----
+        VBox graphsCard = createCard("GRAPHS");
 
         for (GraphAlgorithm algorithm : AlgorithmRegistry.getGraphAlgorithms()) {
 
-            Button button = new Button(algorithm.getDisplayName());
+            Button button = createMenuButton(algorithm.getDisplayName());
 
-            button.setOnAction(event -> button.getScene().setRoot(
+            button.setOnAction(event -> ScreenSwitcher.show(button.getScene(),
                     new GraphView(algorithm, navigator).createView()));
 
-            graphsColumn.getChildren().add(button);
+            graphsCard.getChildren().add(button);
         }
 
-        // The four columns side by side
-        HBox columns = new HBox(40,
-                sortingColumn, searchingColumn, structuresColumn, graphsColumn);
+        // The four cards side by side
+        HBox cards = new HBox(20, sortingCard, searchingCard, structuresCard, graphsCard);
 
-        columns.setAlignment(Pos.TOP_CENTER);
+        cards.setAlignment(Pos.TOP_CENTER);
 
         // Back button: asks the Navigator (Main) to show the dashboard
-        Button backButton = new Button("← Back");
+        Button backButton = Styles.createControlButton("← Back");
+
         backButton.setOnAction(event -> navigator.showDashboard());
 
-        VBox layout = new VBox(30, title, columns, backButton);
+        VBox layout = new VBox(8, title, subtitle, cards, backButton);
+
         layout.setAlignment(Pos.CENTER);
+
+        layout.setStyle("-fx-background-color: #0b0b0d;");
+
+        // A little extra space around the cards and the Back button
+        VBox.setMargin(cards, new Insets(28, 0, 28, 0));
 
         return layout;
     }
 
-    /** A column: a bold heading with the buttons stacked below it. */
-    private VBox createColumn(String heading) {
+    /** A card: a dark rounded panel with a small heading and the buttons below it. */
+    private VBox createCard(String heading) {
 
-        Label label = new Label(heading);
-        label.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        VBox card = new VBox(10, Styles.createSectionLabel(heading));
 
-        VBox column = new VBox(10, label);
-        column.setAlignment(Pos.TOP_CENTER);
+        card.setPrefWidth(225);
 
-        return column;
+        card.setPadding(new Insets(20));
+
+        card.setStyle(
+                "-fx-background-color: #111114;" +
+                        "-fx-background-radius: 12px;" +
+                        "-fx-border-color: #252529;" +
+                        "-fx-border-radius: 12px;"
+        );
+
+        return card;
+    }
+
+    /** A button that fills the width of its card. */
+    private Button createMenuButton(String text) {
+
+        Button button = Styles.createControlButton(text);
+
+        button.setMaxWidth(Double.MAX_VALUE);
+
+        return button;
     }
 
     /** The menu has no timeline or animation, so there is nothing to stop. */

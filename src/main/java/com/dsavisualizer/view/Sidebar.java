@@ -79,7 +79,7 @@ public final class Sidebar {
             button.setOnAction(event -> {
                 if (!selected) {
                     currentScreen.stop();
-                    button.getScene().setRoot(
+                    ScreenSwitcher.show(button.getScene(),
                             new VisualizerView(algorithm, navigator).createView());
                 }
             });
@@ -107,7 +107,7 @@ public final class Sidebar {
             button.setOnAction(event -> {
                 if (!selected) {
                     currentScreen.stop();
-                    button.getScene().setRoot(
+                    ScreenSwitcher.show(button.getScene(),
                             new SearchView(algorithm, navigator).createView());
                 }
             });
@@ -135,7 +135,7 @@ public final class Sidebar {
             button.setOnAction(event -> {
                 if (!selected) {
                     currentScreen.stop();
-                    button.getScene().setRoot(
+                    ScreenSwitcher.show(button.getScene(),
                             new StructureView(structure, navigator).createView());
                 }
             });
@@ -163,7 +163,7 @@ public final class Sidebar {
             button.setOnAction(event -> {
                 if (!selected) {
                     currentScreen.stop();
-                    button.getScene().setRoot(
+                    ScreenSwitcher.show(button.getScene(),
                             new GraphView(algorithm, navigator).createView());
                 }
             });
@@ -200,7 +200,7 @@ public final class Sidebar {
 
         menuButton.setOnAction(event -> {
             currentScreen.stop();
-            menuButton.getScene().setRoot(
+            ScreenSwitcher.show(menuButton.getScene(),
                     new AlgorithmSelectionView(navigator).createView());
         });
 

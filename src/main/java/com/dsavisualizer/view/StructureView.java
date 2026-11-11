@@ -418,6 +418,8 @@ public class StructureView implements AppScreen {
         alert.setHeaderText(title);
         alert.setContentText(message);
 
+        Styles.applyDarkTheme(alert);
+
         alert.showAndWait();
     }
 
