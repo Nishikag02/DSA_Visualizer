@@ -1,6 +1,7 @@
 package com.dsavisualizer.view;
 
 import com.dsavisualizer.algorithms.AlgorithmRegistry;
+import com.dsavisualizer.algorithms.GraphAlgorithm;
 import com.dsavisualizer.algorithms.SearchAlgorithm;
 import com.dsavisualizer.algorithms.SortAlgorithm;
 import com.dsavisualizer.structures.DataStructure;
@@ -136,6 +137,34 @@ public final class Sidebar {
                     currentScreen.stop();
                     button.getScene().setRoot(
                             new StructureView(structure, navigator).createView());
+                }
+            });
+
+            if (selected) {
+                selectedPosition = list.getChildren().size();
+            }
+
+            list.getChildren().add(button);
+        }
+
+        Label graphsLabel = Styles.createSectionLabel("GRAPHS");
+        graphsLabel.setPadding(new Insets(14, 0, 0, 0));
+
+        list.getChildren().add(graphsLabel);
+
+        // One button per graph algorithm (from the registry)
+        for (GraphAlgorithm algorithm : AlgorithmRegistry.getGraphAlgorithms()) {
+
+            boolean selected = algorithm.getDisplayName().equals(selectedName);
+
+            Button button = Styles.createAlgorithmButton(
+                    algorithm.getDisplayName(), selected);
+
+            button.setOnAction(event -> {
+                if (!selected) {
+                    currentScreen.stop();
+                    button.getScene().setRoot(
+                            new GraphView(algorithm, navigator).createView());
                 }
             });
 

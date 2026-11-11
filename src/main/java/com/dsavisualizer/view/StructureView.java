@@ -113,6 +113,7 @@ public class StructureView implements AppScreen {
         subtitle.setWrapText(true);
         subtitle.setMaxWidth(430);
         subtitle.setTextAlignment(TextAlignment.CENTER);
+        subtitle.setAlignment(Pos.CENTER);
 
         // The structure is drawn inside this box (it is rebuilt for every step)
         visualBox = new VBox();

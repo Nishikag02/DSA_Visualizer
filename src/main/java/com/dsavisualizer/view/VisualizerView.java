@@ -127,6 +127,7 @@ public class VisualizerView implements AppScreen {
         subtitle.setWrapText(true);
         subtitle.setMaxWidth(430);
         subtitle.setTextAlignment(TextAlignment.CENTER);
+        subtitle.setAlignment(Pos.CENTER);
 
         subtitle.setStyle(
                 "-fx-font-size: 14px;" +

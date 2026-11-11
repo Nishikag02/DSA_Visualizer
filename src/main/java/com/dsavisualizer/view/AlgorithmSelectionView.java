@@ -1,6 +1,7 @@
 package com.dsavisualizer.view;
 
 import com.dsavisualizer.algorithms.AlgorithmRegistry;
+import com.dsavisualizer.algorithms.GraphAlgorithm;
 import com.dsavisualizer.algorithms.SearchAlgorithm;
 import com.dsavisualizer.algorithms.SortAlgorithm;
 import com.dsavisualizer.structures.DataStructure;
@@ -8,14 +9,17 @@ import com.dsavisualizer.structures.DataStructure;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
  * The "Choose an Algorithm" menu. It implements the AppScreen interface,
- * like the sorting and searching screens.
+ * like the sorting, searching, data structure and graph screens.
  *
- * The buttons are created in loops over the lists in AlgorithmRegistry, so a
- * new algorithm or data structure shows up here automatically.
+ * The menu has four COLUMNS (an HBox of VBoxes): Sorting, Searching, Data
+ * Structures and Graphs. The buttons are created in loops over the lists in
+ * AlgorithmRegistry, so a new algorithm or data structure shows up here
+ * automatically.
  */
 public class AlgorithmSelectionView implements AppScreen {
 
@@ -33,18 +37,11 @@ public class AlgorithmSelectionView implements AppScreen {
         Label title = new Label("Choose an Algorithm");
         title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
 
-        // Layout: a VBox stacks everything from top to bottom
-        VBox layout = new VBox(15);
-        layout.setAlignment(Pos.CENTER);
-        layout.getChildren().add(title);
-
-        // Sorting section
-        Label sortingLabel = new Label("SORTING");
-        sortingLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        layout.getChildren().add(sortingLabel);
-
+        // ----- Column 1: sorting -----
         // All sorting buttons open the SAME screen (VisualizerView);
         // only the SortAlgorithm object is different.
+        VBox sortingColumn = createColumn("SORTING");
+
         for (SortAlgorithm algorithm : AlgorithmRegistry.getSortAlgorithms()) {
 
             Button button = new Button(algorithm.getDisplayName());
@@ -52,15 +49,12 @@ public class AlgorithmSelectionView implements AppScreen {
             button.setOnAction(event -> button.getScene().setRoot(
                     new VisualizerView(algorithm, navigator).createView()));
 
-            layout.getChildren().add(button);
+            sortingColumn.getChildren().add(button);
         }
 
-        // Searching section
-        Label searchingLabel = new Label("SEARCHING");
-        searchingLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        layout.getChildren().add(searchingLabel);
+        // ----- Column 2: searching (all open SearchView) -----
+        VBox searchingColumn = createColumn("SEARCHING");
 
-        // All searching buttons open the SAME screen (SearchView)
         for (SearchAlgorithm algorithm : AlgorithmRegistry.getSearchAlgorithms()) {
 
             Button button = new Button(algorithm.getDisplayName());
@@ -68,15 +62,12 @@ public class AlgorithmSelectionView implements AppScreen {
             button.setOnAction(event -> button.getScene().setRoot(
                     new SearchView(algorithm, navigator).createView()));
 
-            layout.getChildren().add(button);
+            searchingColumn.getChildren().add(button);
         }
 
-        // Data structures section
-        Label structuresLabel = new Label("DATA STRUCTURES");
-        structuresLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        layout.getChildren().add(structuresLabel);
+        // ----- Column 3: data structures (all open StructureView) -----
+        VBox structuresColumn = createColumn("DATA STRUCTURES");
 
-        // All data structure buttons open the SAME screen (StructureView)
         for (DataStructure structure : AlgorithmRegistry.getDataStructures()) {
 
             Button button = new Button(structure.getDisplayName());
@@ -84,15 +75,48 @@ public class AlgorithmSelectionView implements AppScreen {
             button.setOnAction(event -> button.getScene().setRoot(
                     new StructureView(structure, navigator).createView()));
 
-            layout.getChildren().add(button);
+            structuresColumn.getChildren().add(button);
         }
+
+        // ----- Column 4: graphs (all open GraphView) -----
+        VBox graphsColumn = createColumn("GRAPHS");
+
+        for (GraphAlgorithm algorithm : AlgorithmRegistry.getGraphAlgorithms()) {
+
+            Button button = new Button(algorithm.getDisplayName());
+
+            button.setOnAction(event -> button.getScene().setRoot(
+                    new GraphView(algorithm, navigator).createView()));
+
+            graphsColumn.getChildren().add(button);
+        }
+
+        // The four columns side by side
+        HBox columns = new HBox(40,
+                sortingColumn, searchingColumn, structuresColumn, graphsColumn);
+
+        columns.setAlignment(Pos.TOP_CENTER);
 
         // Back button: asks the Navigator (Main) to show the dashboard
         Button backButton = new Button("← Back");
         backButton.setOnAction(event -> navigator.showDashboard());
-        layout.getChildren().add(backButton);
+
+        VBox layout = new VBox(30, title, columns, backButton);
+        layout.setAlignment(Pos.CENTER);
 
         return layout;
+    }
+
+    /** A column: a bold heading with the buttons stacked below it. */
+    private VBox createColumn(String heading) {
+
+        Label label = new Label(heading);
+        label.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        VBox column = new VBox(10, label);
+        column.setAlignment(Pos.TOP_CENTER);
+
+        return column;
     }
 
     /** The menu has no timeline or animation, so there is nothing to stop. */

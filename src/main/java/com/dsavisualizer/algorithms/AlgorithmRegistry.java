@@ -56,4 +56,16 @@ public final class AlgorithmRegistry {
 
         return list;
     }
+
+    public static List<GraphAlgorithm> getGraphAlgorithms() {
+
+        List<GraphAlgorithm> list = new ArrayList<>();
+
+        list.add(new BreadthFirstSearch());
+        list.add(new DepthFirstSearch());
+        list.add(new DijkstraAlgorithm());
+        list.add(new KruskalAlgorithm());
+
+        return list;
+    }
 }
